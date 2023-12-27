@@ -37,9 +37,6 @@ export default {
     propRemoveNote: {
       type: Function,
     },
-    propDataForm: {
-      type: Object,
-    },
   },
   data: function () {
     return { id: 0, title: "", description: "" };
@@ -60,13 +57,14 @@ export default {
       this.description = "";
     },
   },
-  watch: {
-    propDataForm: function (note) {
-      this.id = note.id;
-      this.title = note.title;
-      this.description = note.description;
-    },
-  },
+  mounted(){
+    this.emitter.on('emitForm', data => {
+      console.log(data);
+      this.id = data.id;
+      this.title = data.title;
+      this.description = data.description;
+    });
+  }
 };
 </script>
 
