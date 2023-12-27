@@ -33,10 +33,7 @@ export default {
     },
     propUpdateNote: {
       type: Function,
-    },
-    propRemoveNote: {
-      type: Function,
-    },
+    }
   },
   data: function () {
     return { id: 0, title: "", description: "" };
@@ -51,7 +48,9 @@ export default {
       }
     },
     submitRemove() {
-      this.propRemoveNote(this.id);
+      let data = {id: this.id}
+      this.emitter.emit('emitRemoveNote', data);
+
       this.id = 0;
       this.title = "";
       this.description = "";
@@ -59,7 +58,6 @@ export default {
   },
   mounted(){
     this.emitter.on('emitForm', data => {
-      console.log(data);
       this.id = data.id;
       this.title = data.title;
       this.description = data.description;

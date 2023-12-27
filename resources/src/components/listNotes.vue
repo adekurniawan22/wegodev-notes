@@ -39,9 +39,14 @@ export default {
     editNote(id) {
       let dataForm = this.notes.find((note) => note.id === id);
       this.emitter.emit('emitForm', dataForm);
-      // console.log(dataForm);
     },
   },
+  mounted(){
+      this.emitter.on('emitRemoveNote', data => {
+        let noteIndex = this.notes.findIndex((note) => note.id === data.id);
+        this.notes.splice(noteIndex, 1);
+      })
+  }
 };
 </script>
 
