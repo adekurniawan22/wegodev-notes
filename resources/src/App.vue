@@ -16,12 +16,8 @@
       </div>
     </div>
     <div class="kanan">
-      <FormNotes
-        :propSaveNote="saveNote"
-        :propRemoveNote="removeNote"
-        :propUpdateNote="updateNote"
-        :propDataForm="dataForm"
-      />
+      <FormNotes :propSaveNote="saveNote" :propRemoveNote="removeNote" :propUpdateNote="updateNote"
+        :propDataForm="dataForm" />
     </div>
   </div>
 </template>
@@ -56,10 +52,11 @@ export default {
   },
   methods: {
     newNotes() {
-      this.dataForm = { id: 0, title: "", description: "" };
+      this.dataForm = { id: 0, title: "", description: "", mode: "save" };
     },
     editNote(id) {
       this.dataForm = this.notes.find((note) => note.id === id);
+      this.dataForm.mode = "update";
     },
     saveNote(title, description) {
       let newId = 0;
@@ -91,6 +88,7 @@ body {
   margin: 0px;
   overflow: hidden;
 }
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   color: #2c3e50;
@@ -105,13 +103,16 @@ body {
   background: #f7f7f7;
   color: #616161;
 }
+
 .logo {
   padding: 25px 15px;
   border-bottom: 1px solid gainsboro;
 }
+
 .logo a {
   text-decoration: none;
 }
+
 .logo a h2 {
   margin: 0px;
   display: inline;
@@ -120,33 +121,40 @@ body {
   text-transform: capitalize;
   color: #757575;
 }
+
 .logo a span {
   font-size: 12px;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #139e5f;
 }
+
 .frame-notes {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 85vh;
 }
+
 .bg-success {
   background: #219a63;
   color: white;
   outline: none;
 }
+
 .bg-success:hover {
   background: #24b774;
   color: white;
 }
+
 .bg-danger {
   background: #b50000;
   color: white;
 }
+
 .bg-danger:hover {
   background: #c50000;
 }
+
 .btn {
   border: none;
   font-size: 12px;
@@ -157,6 +165,7 @@ body {
   padding: 7px 25px;
   outline: none;
 }
+
 .btn-new-note {
   width: 90%;
   padding: 12px 10px;
@@ -189,5 +198,4 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-</style>
+}</style>

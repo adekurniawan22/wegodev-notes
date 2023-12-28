@@ -1,24 +1,15 @@
 <template>
   <div class="formNotes">
-    <form @submit="submitNote">
+    <form>
       <div class="menu">
-        <button
-          type="button"
-          @click="submitRemove"
-          class="bg-danger btn btn-delete"
-        >
-          Delete
-        </button>
-        <button type="submit" class="bg-success btn">Save</button>
+        <button type="button" @click="submitRemove" class="bg-danger btn btn-delete">Delete</button>
+        <button type="button" @click="submitSave" class="bg-success btn" v-if="mode == 'save'">Save</button>
+        <button type="button" @click="submitUpdate" class="bg-success btn" v-if="mode == 'update'"> Update </button>
       </div>
-      <div class="content">
+      <div div class=" content">
         <input type="text" class="text" placeholder="id" v-model="id" />
         <input type="text" class="text" placeholder="Title" v-model="title" />
-        <textarea
-          class="text textarea"
-          placeholder="Tuliskan rencana kamu"
-          v-model="description"
-        ></textarea>
+        <textarea class="text textarea" placeholder="Tuliskan rencana kamu" v-model="description"></textarea>
       </div>
     </form>
   </div>
@@ -42,16 +33,14 @@ export default {
     },
   },
   data: function () {
-    return { id: 0, title: "", description: "" };
+    return { id: 0, title: "", description: "", mode: 'save' };
   },
   methods: {
-    submitNote(e) {
-      e.preventDefault();
-      if (this.id === 0) {
-        this.propSaveNote(this.title, this.description);
-      } else {
-        this.propUpdateNote(this.id, this.title, this.description);
-      }
+    submitSave() {
+      this.propSaveNote(this.title, this.description);
+    },
+    submitUpdate() {
+      this.propUpdateNote(this.id, this.title, this.description);
     },
     submitRemove() {
       this.propRemoveNote(this.id);
@@ -65,6 +54,7 @@ export default {
       this.id = note.id;
       this.title = note.title;
       this.description = note.description;
+      this.mode = note.mode;
     },
   },
 };
@@ -78,12 +68,15 @@ export default {
   text-align: right;
   border-bottom: 1px solid #e8e6e6;
 }
+
 .btn-delete {
   margin-right: 10px;
 }
+
 .content {
   padding: 0px 25px;
 }
+
 .text {
   display: block;
   width: 100%;
@@ -96,12 +89,14 @@ export default {
   box-sizing: border-box;
   outline: none;
 }
+
 .textarea {
   min-height: 350px;
   font-size: 15px;
   font-weight: lighter;
   line-height: 30px;
 }
+
 .loader {
   vertical-align: middle;
 }
