@@ -12,12 +12,11 @@
           + Note Baru
         </button>
 
-        <ListNotes :propNotes="notes" :propEditNote="editNote" />
+        <ListNotes />
       </div>
     </div>
     <div class="kanan">
-      <FormNotes :propSaveNote="saveNote" :propRemoveNote="removeNote" :propUpdateNote="updateNote"
-        :propDataForm="dataForm" />
+      <FormNotes />
     </div>
   </div>
 </template>
@@ -30,21 +29,7 @@ import FormNotes from "./components/formNotes.vue";
 export default {
   name: "App",
   data: function () {
-    return {
-      dataForm: {},
-      notes: [
-        {
-          id: 1,
-          title: "Wegodev",
-          description: "Ini isi wegodev",
-        },
-        {
-          id: 2,
-          title: "Super User",
-          description: "Ini isi super user",
-        },
-      ],
-    };
+    return {};
   },
   components: {
     ListNotes,
@@ -52,33 +37,9 @@ export default {
   },
   methods: {
     newNotes() {
-      this.dataForm = { id: 0, title: "", description: "", mode: "save" };
-    },
-    editNote(id) {
-      this.dataForm = this.notes.find((note) => note.id === id);
-      this.dataForm.mode = "update";
-    },
-    saveNote(title, description) {
-      let newId = 0;
-      if (this.notes.length === 0) {
-        newId = 1;
-      } else {
-        newId = this.notes[this.notes.length - 1].id + 1;
-      }
-
-      let newNote = { id: newId, title: title, description: description };
-      this.notes.push(newNote);
-      this.editNote(newId);
-    },
-    updateNote(id, title, description) {
-      let noteIndex = this.notes.findIndex((note) => note.id === id);
-      this.notes[noteIndex].title = title;
-      this.notes[noteIndex].description = description;
-    },
-    removeNote(id) {
-      let noteIndex = this.notes.findIndex((note) => note.id === id);
-      this.notes.splice(noteIndex, 1);
-    },
+      let dataForm = { id: 0, title: "", description: "", mode: 'save' };
+      this.emitter.emit('emitForm', dataForm);
+    }
   },
 };
 </script>
@@ -198,4 +159,5 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}</style>
+}
+</style>

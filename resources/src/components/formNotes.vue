@@ -18,45 +18,43 @@
 <script type="text/javascript">
 export default {
   name: "formNotes",
-  props: {
-    propSaveNote: {
-      type: Function,
-    },
-    propUpdateNote: {
-      type: Function,
-    },
-    propRemoveNote: {
-      type: Function,
-    },
-    propDataForm: {
-      type: Object,
-    },
-  },
+  props: {},
   data: function () {
     return { id: 0, title: "", description: "", mode: 'save' };
   },
   methods: {
     submitSave() {
-      this.propSaveNote(this.title, this.description);
+      let data = {
+        title: this.title,
+        description: this.description
+      }
+      this.emitter.emit('emitSaveNote', data);
     },
     submitUpdate() {
-      this.propUpdateNote(this.id, this.title, this.description);
+      let data = {
+        id: this.id,
+        title: this.title,
+        description: this.description
+      }
+      this.emitter.emit('emitUpdateNote', data);
     },
     submitRemove() {
-      this.propRemoveNote(this.id);
+      let data = { id: this.id }
+      this.emitter.emit('emitRemoveNote', data);
+
       this.id = 0;
       this.title = "";
       this.description = "";
     },
   },
-  watch: {
-    propDataForm: function (note) {
-      this.id = note.id;
-      this.title = note.title;
-      this.description = note.description;
-      this.mode = note.mode;
-    },
-  },
+  mounted() {
+    this.emitter.on('emitForm', data => {
+      this.id = data.id;
+      this.title = data.title;
+      this.description = data.description;
+      this.mode = data.mode;
+    });
+  }
 };
 </script>
 

@@ -1,8 +1,8 @@
 <template>
   <div class="listNotes">
     <ul>
-      <li v-for="(row, index) in propNotes" :key="index">
-        <button class="btn-note" @click="idNote(row.id)">
+      <li v-for="(row, index) in notes" :key="index">
+        <button class="btn-note" @click="editNote(row.id)">
           <label>{{ row.title }}</label>
           <span>{{ row.description }}</span>
         </button>
@@ -14,20 +14,52 @@
 <script type="text/javascript">
 export default {
   name: "listNotes",
-  data: function () {},
-  props: {
-    propNotes: {
-      type: Array,
-    },
-    propEditNote: {
-      type: Function,
-    },
+  data: function () {
+    return {
+      notes: [
+        {
+          id: 1,
+          title: "Wegodev",
+          description: "Ini isi wegodev",
+        },
+        {
+          id: 2,
+          title: "Super User",
+          description: "Ini isi super user",
+        },
+      ],
+    }
   },
+  props: {},
   methods: {
-    idNote(id) {
-      this.propEditNote(id); 
+    editNote(id) {
+      let dataForm = this.notes.find((note) => note.id === id);
+      this.emitter.emit('emitForm', dataForm);
     },
   },
+  mounted() {
+    this.emitter.on('emitRemoveNote', data => {
+      let noteIndex = this.notes.findIndex((note) => note.id === data.id);
+      this.notes.splice(noteIndex, 1);
+    });
+    this.emitter.on('emitUpdateNote', data => {
+      let noteIndex = this.notes.findIndex((note) => note.id === data.id);
+      this.notes[noteIndex].title = data.title;
+      this.notes[noteIndex].description = data.description;
+    });
+    this.emitter.on('emitSaveNote', data => {
+      let newId = 0;
+      if (this.notes.length === 0) {
+        newId = 1;
+      } else {
+        newId = this.notes[this.notes.length - 1].id + 1;
+      }
+
+      let newNote = { id: newId, title: data.title, description: data.description };
+      this.notes.push(newNote);
+      this.editNote(newId);
+    });
+  }
 };
 </script>
 
@@ -49,15 +81,18 @@ ul {
   height: 150px;
   width: 100%;
 }
+
 .btn-note:hover {
   background: #eaeaea;
 }
+
 .btn-note label {
   display: block;
   color: #444444;
   font-size: 1.5em;
   margin-bottom: 15px;
 }
+
 .btn-note span {
   color: #545454;
 }
