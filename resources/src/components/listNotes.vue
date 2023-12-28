@@ -34,6 +34,7 @@ export default {
   methods: {
     editNote(id) {
       let dataForm = this.notes.find((note) => note.id === id);
+      dataForm.mode = "update";
       this.emitter.emit('emitForm', dataForm);
     },
   },
