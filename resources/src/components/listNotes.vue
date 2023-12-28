@@ -15,7 +15,7 @@
 export default {
   name: "listNotes",
   data: function () {
-    return{
+    return {
       notes: [
         {
           id: 1,
@@ -30,22 +30,35 @@ export default {
       ],
     }
   },
-  props: {
-    propEditNote: {
-      type: Function,
-    },
-  },
+  props: {},
   methods: {
     editNote(id) {
       let dataForm = this.notes.find((note) => note.id === id);
       this.emitter.emit('emitForm', dataForm);
     },
   },
-  mounted(){
-      this.emitter.on('emitRemoveNote', data => {
-        let noteIndex = this.notes.findIndex((note) => note.id === data.id);
-        this.notes.splice(noteIndex, 1);
-      })
+  mounted() {
+    this.emitter.on('emitRemoveNote', data => {
+      let noteIndex = this.notes.findIndex((note) => note.id === data.id);
+      this.notes.splice(noteIndex, 1);
+    });
+    this.emitter.on('emitUpdateNote', data => {
+      let noteIndex = this.notes.findIndex((note) => note.id === data.id);
+      this.notes[noteIndex].title = data.title;
+      this.notes[noteIndex].description = data.description;
+    });
+    this.emitter.on('emitSaveNote', data => {
+      let newId = 0;
+      if (this.notes.length === 0) {
+        newId = 1;
+      } else {
+        newId = this.notes[this.notes.length - 1].id + 1;
+      }
+
+      let newNote = { id: newId, title: data.title, description: data.description };
+      this.notes.push(newNote);
+      this.editNote(newId);
+    });
   }
 };
 </script>
@@ -68,15 +81,18 @@ ul {
   height: 150px;
   width: 100%;
 }
+
 .btn-note:hover {
   background: #eaeaea;
 }
+
 .btn-note label {
   display: block;
   color: #444444;
   font-size: 1.5em;
   margin-bottom: 15px;
 }
+
 .btn-note span {
   color: #545454;
 }
