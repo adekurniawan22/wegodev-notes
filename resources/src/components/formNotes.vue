@@ -16,6 +16,8 @@
 </template>
 
 <script type="text/javascript">
+
+import axios from 'axios';
 export default {
   name: "formNotes",
   props: {},
@@ -24,27 +26,49 @@ export default {
   },
   methods: {
     submitSave() {
-      let data = {
-        title: this.title,
-        description: this.description
-      }
-      this.emitter.emit('emitSaveNote', data);
+      let params = new URLSearchParams();
+      params.append('title', this.title);
+      params.append('description', this.description);
+
+      axios.post('http://localhost/wegodev-notes/note/create', params).then(response => {
+        let data = {
+          id: response.data.id,
+          title: this.title,
+          description: this.description
+        }
+        this.emitter.emit('emitSaveNote', data);
+      });
     },
     submitUpdate() {
-      let data = {
-        id: this.id,
-        title: this.title,
-        description: this.description
-      }
-      this.emitter.emit('emitUpdateNote', data);
+      let params = new URLSearchParams();
+      params.append('id', this.id);
+      params.append('title', this.title);
+      params.append('description', this.description);
+
+      axios.post('http://localhost/wegodev-notes/note/update', params).then(() => {
+        let data = {
+          id: this.id,
+          title: this.title,
+          description: this.description
+        };
+        this.emitter.emit('emitUpdateNote', data);
+      });
     },
     submitRemove() {
-      let data = { id: this.id }
-      this.emitter.emit('emitRemoveNote', data);
 
-      this.id = 0;
-      this.title = "";
-      this.description = "";
+      let params = new URLSearchParams();
+      params.append('id', this.id);
+
+      axios.post('http://localhost/wegodev-notes/note/delete', params).then(() => {
+        let data = {
+          id: this.id,
+        };
+        this.emitter.emit('emitRemoveNote', data);
+        this.id = 0;
+        this.title = "";
+        this.description = "";
+      });
+
     },
   },
   mounted() {

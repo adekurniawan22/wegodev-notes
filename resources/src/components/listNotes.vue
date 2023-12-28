@@ -12,22 +12,13 @@
 </template>
 
 <script type="text/javascript">
+
+import axios from 'axios';
 export default {
   name: "listNotes",
   data: function () {
     return {
-      notes: [
-        {
-          id: 1,
-          title: "Wegodev",
-          description: "Ini isi wegodev",
-        },
-        {
-          id: 2,
-          title: "Super User",
-          description: "Ini isi super user",
-        },
-      ],
+      notes: [],
     }
   },
   props: {},
@@ -37,8 +28,14 @@ export default {
       dataForm.mode = "update";
       this.emitter.emit('emitForm', dataForm);
     },
+    getData() {
+      axios.get('http://localhost/wegodev-notes/note').then(response => {
+        this.notes = response.data
+      });
+    }
   },
   mounted() {
+    this.getData();
     this.emitter.on('emitRemoveNote', data => {
       let noteIndex = this.notes.findIndex((note) => note.id === data.id);
       this.notes.splice(noteIndex, 1);
@@ -49,16 +46,9 @@ export default {
       this.notes[noteIndex].description = data.description;
     });
     this.emitter.on('emitSaveNote', data => {
-      let newId = 0;
-      if (this.notes.length === 0) {
-        newId = 1;
-      } else {
-        newId = this.notes[this.notes.length - 1].id + 1;
-      }
-
-      let newNote = { id: newId, title: data.title, description: data.description };
-      this.notes.push(newNote);
-      this.editNote(newId);
+      let newNote = { id: data.id, title: data.title, description: data.description };
+      this.notes.unshift(newNote);
+      this.editNote(data.id);
     });
   }
 };
